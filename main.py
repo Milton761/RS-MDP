@@ -77,7 +77,7 @@ def test():
 	tam = 1
 	R = genTire(tam)
 	ssp = R['ssp']
-	
+
 	md = R['metadata'] 
 	am = R['actMap']
 
@@ -92,6 +92,6 @@ def test():
 
 	#0.6 0.7 0.8
 	R = lp_ssp_e(ssp, 0.7)
-	plotTire(ssp, tam, "tire3-07", R['policy'], md, am);
+	plotTire(ssp, tam, "example-tire", R['policy'], md, am);
 
 test()
