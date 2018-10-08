@@ -10,6 +10,8 @@ import numpy as np
 from vi import *
 
 
+
+
 def printValues(problem):
 	#print variables values of one problem
 	print("=============values==============")

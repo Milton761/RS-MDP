@@ -1,6 +1,6 @@
-from ssp import *
 import os
-
+import random
+from ssp import *
 
 def prNav(i,x):
 
@@ -363,11 +363,6 @@ def genNav(x,y):
 
 	return ssp
 
-
-
-
-
-
 def plotNav(ssp, x, y, filename, policy = {}):
 
 
@@ -649,8 +644,12 @@ def genRiv2(x,y):
 
 	return ssp
 
+def getRandomPr(a = 0, b = 1):
 
+	a *= 100
+	b *= 100
 
+	return random.randint(a,b)/100
 
 def genRiv(x,y):
 
@@ -933,37 +932,8 @@ def st2(i,j):
 	return str(i) + ',' + str(j)
 
 
-def genTire(tam):
+def genTire(tam, options = {}):
 
-	# def genTireworld(tam):
-		
-	# 	tam = tam+1
-
-	# 	for j in range(1,tam,1):
-	# 		for i in range(1,tam,1):
-	# 			print(j,i)
-	# 		tam = tam-1
-			
-	# 	print("---------------")
-	# 	#creating routes
-	# 	sa = 1
-	# 	sb = 1
-
-	# 	def create_routes(sa,sb):
-			
-	# 		tama = sa+3
-	# 		tamb = sb+3
-	# 		for j in range(sa,tama,1):
-	# 			for i in range(sb,tamb,1):
-	# 				#action D
-	# 				if j%2==1:
-	# 					print(j,i," D ", j,i+1)
-
-					
-	# 			tama = tama-1
-	# 			tamb = tamb-1
-
-	# 	create_routes(sa,sb)
 	ssp = SSP()
 	ssp.name = 'tireworld['+str(tam)+']'
 
@@ -1046,7 +1016,13 @@ def genTire(tam):
 	tam2 = tam
 
 	prtn = 0.5
+
+	#pr to go next state
 	prst = 0.8
+
+	if len(options):
+		prtn = options['pr_return']
+		prst = options['pr_execute']
 
 	for j in range(1,tam):
 		for i in range(1,tam2):
@@ -1085,19 +1061,20 @@ def genTire(tam):
 						ssp.App(s,a)
 				else :
 					if j == 1:
+						# print('state {0} {1}'.format(i, j))
 						p1[s] = 'safe'
 						# right ->
 						s1 = st2(i+1,j)
 						a = A[0]
-						ssp.P(s,a,s1,prst)
-						ssp.P(s,a,s1,1-prst)
+						ssp.P(s,a,s1, prst)
+						ssp.P(s,a,s, 1-prst)
 						ssp.C(s,a,1)
 						ssp.App(s,a)
 						# down v
 						s1 = st2(i,j+1)
 						a = A[1]
 						ssp.P(s,a,s1,prst)
-						ssp.P(s,a,s1,1-prst)
+						ssp.P(s,a,s ,1-prst)
 						ssp.C(s,a,1)
 						ssp.App(s,a)
 						# left |/
@@ -1105,7 +1082,7 @@ def genTire(tam):
 						if s1 in ssp._S:
 							a = A[2]
 							ssp.P(s,a,s1,prst)
-							ssp.P(s,a,s1,1-prst)
+							ssp.P(s,a,s ,1-prst)
 							ssp.C(s,a,1)
 							ssp.App(s,a)
 					else:
@@ -1130,7 +1107,7 @@ def genTire(tam):
 				s1 = st2(i+1,j)
 				a = A[0]
 				ssp.P(s,a,s1,prst)
-				ssp.P(s,a,s1,1-prst)
+				ssp.P(s,a,s ,1-prst)
 				ssp.C(s, a, 1)
 				ssp.App(s, a)
 
@@ -1141,7 +1118,7 @@ def genTire(tam):
 				s1 = st2(i-1,j+1)
 				a = A[2]
 				ssp.P(s,a,s1,prst)
-				ssp.P(s,a,s1,1-prst)
+				ssp.P(s,a,s ,1-prst)
 				ssp.C(s, a, 1)
 				ssp.App(s, a)
 
@@ -1155,7 +1132,7 @@ def genTire(tam):
 				
 				if s1 in ssp._S:
 					ssp.P(s,a,s1,prst)
-					ssp.P(s,a,s1,1-prst)
+					ssp.P(s,a,s ,1-prst)
 					ssp.C(s, a, 1)
 					ssp.App(s, a)
 
@@ -1164,8 +1141,8 @@ def genTire(tam):
 				s1 = st2(i,j+1)
 				a = A[1]
 				if s1 in ssp._S:
-					ssp.P(s,a,s1,prst)
-					ssp.P(s,a,s1,1-prst)
+					ssp.P(s,a,s1, prst)
+					ssp.P(s,a,s, 1-prst)
 					ssp.C(s, a, 1)
 					ssp.App(s, a)
 
@@ -1173,7 +1150,7 @@ def genTire(tam):
 				s1 = st2(i-1,j+1)
 				a = A[2]
 				ssp.P(s,a,s1,prst)
-				ssp.P(s,a,s1,1-prst)
+				ssp.P(s,a,s,1-prst)
 				ssp.C(s, a, 1)
 				ssp.App(s, a)
 
@@ -1215,7 +1192,7 @@ def genTire(tam):
 				s1 = st2(i-1,j+1)
 				a = A[2]
 				ssp.P(s,a,s1,prst)
-				ssp.P(s,a,s1,1-prst)
+				ssp.P(s,a,s,1-prst)
 				# ssp.P(s, a, s0, prtn)
 				ssp.C(s, a, 1)
 				ssp.App(s, a)
@@ -1236,7 +1213,7 @@ def genTire(tam):
 					else:
 						p1[s] = 'safe'
 						ssp.P(s,a,s1,prst)
-						ssp.P(s,a,s1,1-prst)
+						ssp.P(s,a,s,1-prst)
 						ssp.C(s, a, 1)
 						ssp.App(s, a)
 				# down \/
@@ -1252,7 +1229,7 @@ def genTire(tam):
 					else:
 						p1[s] = 'safe'
 						ssp.P(s,a,s1,prst)
-						ssp.P(s,a,s1,1-prst)
+						ssp.P(s,a,s,1-prst)
 						ssp.C(s, a, 1)
 						ssp.App(s, a)
 				# left |/
@@ -1268,7 +1245,7 @@ def genTire(tam):
 					else:
 						p1[s] = 'safe'
 						ssp.P(s,a,s1,prtn)
-						ssp.P(s,a,s1,1-prtn)
+						ssp.P(s,a,s,1-prtn)
 						ssp.C(s, a, 1)
 						ssp.App(s, a)
 		tam2 -= 1

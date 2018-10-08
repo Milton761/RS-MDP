@@ -1,6 +1,6 @@
 from collections import defaultdict
 import json
-
+import random
 
 class SSP:
 
@@ -20,6 +20,8 @@ class SSP:
 		self._C = {}
 		self._App = defaultdict(list)
 
+		self.s_a_pr = defaultdict(list)
+		self.s_a_st = defaultdict(list)
 
 	def App(self, state, action = None):
 
@@ -34,7 +36,10 @@ class SSP:
 		if probability is None:
 			return self._P.get((s,action,s1),0)
 		else:
-			self._P[s, action, s1] = probability
+			self._P[s, action, s1] = round(probability,2)
+			self.s_a_st[s,action].append(s1)
+			self.s_a_pr[s,action].append(round(probability,2))
+			
 
 	def C(self, s, a, cost = None):
 		if cost is None:
@@ -77,6 +82,15 @@ class SSP:
 						print("\t"+str(s)+" - "+a+ " - " +str(s1)+" Pr: "+str(self.P(s,a,s1)) + " C:"+ str(self.C(s,a)) )
 
 		
+		for s_a in self.s_a_st:
+			print('State-Action : {0}'.format(s_a))
+			p = self.s_a_st[s_a]
+			s = self.s_a_pr[s_a]
+			print('\t{0}'.format(s))
+			print('\t{0}'.format(p))
+			print('-----------------------------')
+
+
 	def __str__(self):
 
 
@@ -219,3 +233,31 @@ class SSP:
 
 			var = "}"
 			out.write(var+'\n')
+
+	def simulate(self, s, a):
+
+		S = self.s_a_st[s,a]
+		P = self.s_a_pr[s,a]
+
+		R = random.choices(S,P,k=1)
+		
+		return R[0]
+
+	def evalPolicy(self, policy = {}, samples = 1000):
+		
+		s0 = self._s0
+		sg = self._G[0]
+
+		current_state = s0
+		cost = 0
+
+		for i in range(samples):
+			while current_state!= sg:
+
+
+				next_state = self.simulate(current_state, policy[current_state])
+				cost+= self.C(current_state, policy[current_state])
+				current_state = next_state
+			current_state = self._s0
+
+		return cost/samples

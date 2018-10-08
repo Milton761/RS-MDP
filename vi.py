@@ -158,7 +158,7 @@ def vi_e(ssp, lambdaf, error=0.000001, verbose=0, time_limit=60):
             break
             
        
-        if locale < 0.001:
+        if locale < 0.000001:
             flag = False
         #print("N Iterations : ", counter)
 
