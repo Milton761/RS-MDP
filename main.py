@@ -133,5 +133,5 @@ def expTir_random():
 		e = getError(theoricalLambda, R2['factor'])
 		print('Optimal: {0:5.3f} , Calculated: {1:5.3f} in {2:5.3f} secs, with {3:5.3f}% error'.format(theoricalLambda, R2['factor'], R2['time'], e))
 
-expTir_random()
+# expTir_random()
 
